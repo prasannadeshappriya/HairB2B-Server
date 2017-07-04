@@ -10,10 +10,24 @@
     <script src="js/bootstrap.js"></script>
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/angular.min.js"></script>
+    <script>
+        angular.module('server_status',[])
+            .controller('status_controller',['$scope',function($scope){
+                $scope.server_admin = "Prasanna Deshappriya";
+
+                $scope.getStatus = function () {
+                    //get the server status flag from database
+                    //(Hardcoded for now)
+                    return "working";
+                }
+            }]);
+    </script>
 </head>
-<body>
+<body ng-app="server_status" ng-controller="status_controller">
     <div class="container">
-        <h4 class="text-info">Server start on 'http://localhost:3000'</h4>
+        <h3 class="text-info">Server start on 'http://localhost:3000'</h3>
+        <p class="text-info text-uppercase"> Server Admin: {{server_admin}} <br>
+         Status: {{getStatus()}} </p>
     </div>
 </body>
 </html>
