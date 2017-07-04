@@ -11,3 +11,25 @@ exports.insert = function(name, password) {
         if (err) throw err;
     });
 };
+
+exports.getUsers = function(callback) {
+    connection.query('SELECT name FROM user', function (err, rows) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, rows);
+        }
+    });
+};
+
+exports.login = function(name, password,callback) {
+    var values = [name, password];
+    var query = 'SELECT name FROM user WHERE name=? AND password=?';
+    connection.query(query, values, function(err, result) {
+        if (err){
+            callback(err, null);
+        }else{
+            callback(null,result);
+        }
+    });
+};

@@ -1,10 +1,10 @@
 /**
  * Created by prasanna_d on 7/4/2017.
  */
-var user = require('../models/user');
+var user = require('../../models/user');
 
 module.exports = {
-    test : function (req, res) {
+    login : function (req, res) {
         var name = req.query.name;
         var password = req.query.password;
 
@@ -17,8 +17,13 @@ module.exports = {
 
         if(name!==""){
             if(password!==""){
-                user.insert(name,password);
-                res.json({ status : 'User successfully inserted'});
+                user.login(name,password,function (err,data) {
+                    if(err){
+                        return res.json({error : err});
+                    }else{
+                        console.log(data);
+                    }
+                })
             }else{
                 return res.json({status : 'username or password cannot be blank'});
             }
