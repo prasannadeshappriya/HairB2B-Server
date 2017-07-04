@@ -21,9 +21,16 @@ module.exports = {
                     if(err){
                         return res.json({error : err});
                     }else{
-                        console.log(data);
+                        if(data.length===0){
+                            return res.json({error : 'no match'});
+                        }else{
+                            return res.json({status : 'match'});
+                        }
+
+
+                        return res.json({user : 'prasanna'});
                     }
-                })
+                });
             }else{
                 return res.json({status : 'username or password cannot be blank'});
             }
