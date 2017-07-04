@@ -6,4 +6,4 @@ module.exports = {
     getIndexView : function (req, res) {
         res.render('index', { title: 'Express' });
     }
-}
+};
