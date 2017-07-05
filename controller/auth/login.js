@@ -26,9 +26,6 @@ module.exports = {
                         }else{
                             return res.json({status : 'match'});
                         }
-
-
-                        return res.json({user : 'prasanna'});
                     }
                 });
             }else{

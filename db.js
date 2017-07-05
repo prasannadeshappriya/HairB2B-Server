@@ -9,16 +9,17 @@ var connection = mysql.createConnection({
     database: 'sample'
 });
 
-exports.connect = function () {
-    connection.connect(function (err) {
-        if (!err) {
-            console.log("Database is connected");
-        } else {
-            console.log("Error connecting database");
-        }
-    });
-};
+// connection.connect = function () {
+//     connection.connect(function (err) {
+//         if (!err) {
+//             console.log("Database is connected");
+//         } else {
+//             console.log("Error connecting database");
+//         }
+//     });
+// };
 
 exports.getConnection = function () {
+    console.log("Database is connected");
     return connection;
 };
