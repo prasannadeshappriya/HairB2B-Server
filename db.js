@@ -4,22 +4,18 @@
 var mysql = require('mysql');
 var connection = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
+    user: 'internship',
     password: '1000',
-    database: 'sample'
+    database: 'hairb2b_database'
 });
 
-// connection.connect = function () {
-//     connection.connect(function (err) {
-//         if (!err) {
-//             console.log("Database is connected");
-//         } else {
-//             console.log("Error connecting database");
-//         }
-//     });
-// };
 
-exports.getConnection = function () {
-    console.log("Database is connected");
-    return connection;
-};
+connection.connect(function (err) {
+    if (!err) {
+        console.log("Database is connected");
+    } else {
+        console.log("Error connecting database");
+    }
+});
+
+module.exports = connection;

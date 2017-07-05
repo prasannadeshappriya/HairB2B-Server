@@ -5,11 +5,11 @@ var user = require('../../models/user');
 
 module.exports = {
     isUserExist : function (req, res) {
-        var name = req.query.name;
-        if(typeof name === "undefined"){
-            return res.json({ error: 'name required'});
+        var email = req.query.email;
+        if(typeof email === "undefined"){
+            return res.json({ error: 'email required'});
         }
-        user.isUserExist(name,function (err,data) {
+        user.isUserExist(email,function (err,data) {
             if(err){return res.json({error : err});}
             else{
                 if(data.length===0){return res.json({status : 'false'});}
@@ -19,16 +19,22 @@ module.exports = {
     },
 
     register : function (req, res) {
-        var name= req.query.name;
+        var first_name= req.query.firstname;
+        var last_name= req.query.lastname;
+        var email= req.query.email;
         var password = req.query.password;
 
         //Authentication data
-        if(typeof  name==="undefined"){return res.json({error : 'name field is required'});}
+        if(typeof  first_name==="undefined"){return res.json({error : 'firstname field is required'});}
+        if(typeof  last_name==="undefined"){return res.json({error : 'lastname field is required'});}
+        if(typeof  email==="undefined"){return res.json({error : 'email field is required'});}
         if(typeof  password==="undefined"){return res.json({error : 'password field is required'});}
-        if(name===""){return res.json({error : 'name field cannot left blank'});}
+        if(first_name===""){return res.json({error : 'firstname field cannot left blank'});}
+        if(last_name===""){return res.json({error : 'lastname field cannot left blank'});}
+        if(email===""){return res.json({error : 'email field cannot left blank'});}
         if(password===""){return res.json({error : 'password field cannot left blank'});}
 
-        user.register(name,password,function (err,error,message) {
+        user.register(first_name,last_name,email,password,function (err,error,message) {
             if(err){return res.json({error : err});}
             else{
                 if(error){

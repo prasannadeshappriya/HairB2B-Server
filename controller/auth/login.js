@@ -5,19 +5,19 @@ var user = require('../../models/user');
 
 module.exports = {
     login : function (req, res) {
-        var name = req.query.name;
+        var email = req.query.email;
         var password = req.query.password;
 
-        if(typeof name==="undefined"){
-            return res.json({status : 'name field is required'});
+        if(typeof email==="undefined"){
+            return res.json({status : 'email field is required'});
         }
         if(typeof password==="undefined"){
             return res.json({status : 'password field is required'});
         }
 
-        if(name!==""){
+        if(email!==""){
             if(password!==""){
-                user.login(name,password,function (err,data) {
+                user.login(email,password,function (err,data) {
                     if(err){
                         return res.json({error : err});
                     }else{
