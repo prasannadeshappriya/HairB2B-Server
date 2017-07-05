@@ -3,6 +3,7 @@
  */
 var user = require('../../models/user');
 var hashPass = require('password-hash');
+var token_generator = require('rand-token');
 
 module.exports = {
     login : function (req, res) {
@@ -28,7 +29,7 @@ module.exports = {
                         }else{
                             var _password = data[0].password;
                             if(hashPass.verify(password, _password)){
-                                return res.json({status : 'user authenticated'});
+                                return res.json({token : token_generator.generate(32)});
                             }else{
                                 return res.json({status : 'username or password is invalid'});
                             }
