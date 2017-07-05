@@ -37,9 +37,9 @@ exports.isUserExist = function (email, callback) {
     });
 };
 
-exports.login = function(email, password,callback) {
-    var values = [email, password];
-    var query = 'SELECT id FROM user WHERE email=? AND password=?';
+exports.login = function(email,callback) {
+    var values = [email];
+    var query = 'SELECT password FROM user WHERE email=?';
     connection.query(query, values, function(err, result) {
         if (err){callback(err, null);}
         else{callback(null,result);}

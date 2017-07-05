@@ -2,6 +2,7 @@
  * Created by prasanna_d on 7/4/2017.
  */
 var user = require('../../models/user');
+var passhash = require('password-hash');
 
 module.exports = {
     isUserExist : function (req, res) {
@@ -34,6 +35,7 @@ module.exports = {
         if(email===""){return res.json({error : 'email field cannot left blank'});}
         if(password===""){return res.json({error : 'password field cannot left blank'});}
 
+        password = passhash.generate(password);
         user.register(first_name,last_name,email,password,function (err,error,message) {
             if(err){return res.json({error : err});}
             else{
