@@ -10,35 +10,24 @@ module.exports = {
         var email = req.query.email;
         var password = req.query.password;
 
-        if(typeof email==="undefined"){
-            return res.json({status : 'email field is required'});
-        }
-        if(typeof password==="undefined"){
-            return res.json({status : 'password field is required'});
-        }
+        //Validating data
+        if(typeof email==="undefined"){return res.json({status : 'email field is required'});}
+        if(typeof password==="undefined"){return res.json({status : 'password field is required'});}
 
         if(email!==""){
             if(password!==""){
                 user.login(email,function (err,data) {
-                    if(err){
-                        return res.json({error : err});
+                    if(err){return res.json({error : err});
                     }else{
-                        var dataa = JSON.stringify(data);
-                        if(data.length===0){
-                            return res.json({error : 'no match'});
-                        }else{
+                        if(data.length===0){return res.json({error : 'invalid username or password'});}
+                        else{
                             var _password = data[0].password;
-                            if(hashPass.verify(password, _password)){
-                                return res.json({token : token_generator.generate(32)});
-                            }else{
-                                return res.json({status : 'username or password is invalid'});
-                            }
+                            if(hashPass.verify(password, _password)){return res.json({token : token_generator.generate(32)});}
+                            else{return res.json({status : 'username or password is invalid'});}
                         }
                     }
                 });
-            }else{
-                return res.json({status : 'username or password cannot be blank'});
-            }
-        }
+            }else{return res.json({status : 'username or password cannot be blank'});}
+        }else{return res.json({status : 'username or password cannot be blank'});}
     }
 };

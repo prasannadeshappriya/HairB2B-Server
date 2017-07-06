@@ -9,6 +9,6 @@ module.exports = {
     },
 
     test : function (req, res) {
-
+        return res.json({status : "test route working"});
     }
 };
