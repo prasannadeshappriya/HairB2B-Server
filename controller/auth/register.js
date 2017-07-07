@@ -20,29 +20,21 @@ module.exports = {
     },
 
     register : function (req, res) {
-        var first_name= req.query.firstname;
-        var last_name= req.query.lastname;
-        var email= req.query.email;
-        var password = req.query.password;
-
-        //Authentication data
-        if(typeof  first_name==="undefined"){return res.json({error : 'firstname field is required'});}
-        if(typeof  last_name==="undefined"){return res.json({error : 'lastname field is required'});}
-        if(typeof  email==="undefined"){return res.json({error : 'email field is required'});}
-        if(typeof  password==="undefined"){return res.json({error : 'password field is required'});}
-        if(first_name===""){return res.json({error : 'firstname field cannot left blank'});}
-        if(last_name===""){return res.json({error : 'lastname field cannot left blank'});}
-        if(email===""){return res.json({error : 'email field cannot left blank'});}
-        if(password===""){return res.json({error : 'password field cannot left blank'});}
+        var first_name= req.body.firstname;
+        var last_name= req.body.lastname;
+        var email= req.body.email;
+        var password = req.body.password;
 
         password = passhash.generate(password);
         user.register(first_name,last_name,email,password,function (err,error,message) {
-            if(err){return res.json({error : err});}
+            if(err){console.log(err);
+                return res.json({error : "Server error occurred", status : "fail"});}
             else{
                 if(error){
-                    return res.json({error : message});
+                    console.log(message);
+                    return res.json({error : message, status : "fail"});
                 }else{
-                    return res.json({status : "user successfully inserted"});
+                    return res.json({status : "success"});
                 }
             }
         });

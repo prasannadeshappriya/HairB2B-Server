@@ -15,7 +15,7 @@ exports.register = function(first_name, last_name, email, password, callback) {
                     else {callback(null,false,"");}
                 });
             }else{
-                callback(null,true,"user already exist in the database");
+                callback(null,true,"User already exist");
             }
         }
     });

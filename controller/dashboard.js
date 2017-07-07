@@ -9,6 +9,8 @@ module.exports = {
     },
 
     test : function (req, res) {
-        return res.json({status : "test route working"});
+        console.log('Hello query: ' + req.query.test);
+        console.log('Hello body: ' + req.body.test);
+        return res.json({status : "test route working :P"});
     }
 };

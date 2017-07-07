@@ -9,6 +9,6 @@ var dashboard = require('../controller/dashboard');
 router.route('/').get(dashboard.getIndexView);
 
 //Testing Purposes
-router.route('/test').get(dashboard.test);
+router.route('/test').post(dashboard.test);
 
 module.exports = router;
