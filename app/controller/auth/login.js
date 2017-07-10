@@ -1,9 +1,10 @@
 /**
  * Created by prasanna_d on 7/4/2017.
  */
-var user = require('../../models/user');
+
 var hashPass = require('password-hash');
 var token_generator = require('rand-token');
+var models = require('../../../db/models');
 
 module.exports = {
     login : function (req, res) {
@@ -16,16 +17,24 @@ module.exports = {
 
         if(email!==""){
             if(password!==""){
-                user.login(email,function (err,data) {
-                    if(err){return res.json({error : err});
-                    }else{
-                        if(data.length===0){return res.json({error : 'invalid username or password'});}
-                        else{
-                            var _password = data[0].password;
-                            if(hashPass.verify(password, _password)){return res.json({token : token_generator.generate(32)});}
-                            else{return res.json({status : 'username or password is invalid'});}
-                        }
+                models.user.findOne({
+                    where: {
+                        email: email
                     }
+                }).then(function(user){
+                    //No match for given email address
+                    if(user===null){
+                        return res.json({error : "Username or password is invalid", status : "fail"});
+                    }
+                    //Check the password with the hashed password
+                    if(hashPass.verify(password,user.password)) {
+                        return res.json({error: "Login Success", status: "success"});
+                    }
+                    //Unauthorized access
+                    return res.json({error : "Username or password is invalid", status : "fail"});
+                }).catch(function(err){
+                    console.log('Error occured: ', err);
+                    return res.json({error : "Server error occurred", status : "fail"});
                 });
             }else{return res.json({status : 'username or password cannot be blank'});}
         }else{return res.json({status : 'username or password cannot be blank'});}

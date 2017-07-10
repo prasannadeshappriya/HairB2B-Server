@@ -10,7 +10,6 @@ var register = require('../controller/auth/register');
 
 //User Auth routes
 router.route('/register').post(register.register);
-router.route('/register/isexist').get(register.isUserExist);
 
 //Login
 router.route('/login').post(login.login);
