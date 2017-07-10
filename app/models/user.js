@@ -1,7 +1,7 @@
 /**
  * Created by prasanna_d on 7/4/2017.
  */
-var connection = require('../db');
+var connection = require('../config/db');
 
 exports.register = function(first_name, last_name, email, password, callback) {
     isUserExist(email,function (err,data) {

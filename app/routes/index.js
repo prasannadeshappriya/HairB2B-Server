@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 //Controllers
-var dashboard = require('../controller/dashboard');
+var dashboard = require('../app/controller/dashboard');
 
 //Routes
 //Dashboard
