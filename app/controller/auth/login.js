@@ -8,12 +8,8 @@ var models = require('../../../db/models');
 
 module.exports = {
     login : function (req, res) {
-        var email = req.query.email;
-        var password = req.query.password;
-
-        //Validating data
-        if(typeof email==="undefined"){return res.json({status : 'email field is required'});}
-        if(typeof password==="undefined"){return res.json({status : 'password field is required'});}
+        var email = req.body.email;
+        var password = req.body.password;
 
         if(email!==""){
             if(password!==""){
