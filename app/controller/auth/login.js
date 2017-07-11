@@ -3,7 +3,8 @@
  */
 
 var hashPass = require('password-hash');
-var token_generator = require('rand-token');
+var config = require('../../../config/config');
+var jwt = require('jsonwebtoken');
 var models = require('../../../db/models');
 
 module.exports = {
@@ -24,7 +25,10 @@ module.exports = {
                     }
                     //Check the password with the hashed password
                     if(hashPass.verify(password,user.password)) {
-                        return res.json({error: "Login Success", status: "success"});
+                        var token = jwt.sign({email : user.email}, config.secret,{
+                            expiresIn: 18000
+                        });
+                        return res.json({error: "Login Success", status: "success", token: token});
                     }
                     //Unauthorized access
                     return res.json({error : "Username or password is invalid", status : "fail"});
