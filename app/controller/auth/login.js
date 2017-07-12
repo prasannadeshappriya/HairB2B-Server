@@ -28,7 +28,12 @@ module.exports = {
                         var token = jwt.sign({email : user.email}, config.secret,{
                             expiresIn: 60*60*24   //Token expire in 24 Hours
                         });
-                        return res.json({error: "Login Success", status: "success", token: token});
+                        return res.json({
+                            error: "Login Success",
+                            status: "success",
+                            token: token,
+                            email: email
+                        });
                     }
                     //Unauthorized access
                     return res.json({error : "Username or password is invalid", status : "fail"});
