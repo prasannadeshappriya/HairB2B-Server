@@ -9,8 +9,7 @@ module.exports = {
     },
 
     test : function (req, res) {
-        console.log('Hello query: ' + req.query.test);
-        console.log('Hello body: ' + req.body.test);
+        console.log('Test: ' + req.user.email);
         return res.json({status : "test route working :P"});
     }
 };

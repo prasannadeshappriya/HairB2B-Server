@@ -26,7 +26,7 @@ module.exports = {
                     //Check the password with the hashed password
                     if(hashPass.verify(password,user.password)) {
                         var token = jwt.sign({email : user.email}, config.secret,{
-                            expiresIn: 18000
+                            expiresIn: 60*60*24   //Token expire in 24 Hours
                         });
                         return res.json({error: "Login Success", status: "success", token: token});
                     }
