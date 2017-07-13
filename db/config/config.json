@@ -7,16 +7,16 @@
     "dialect": "mysql"
   },
   "test": {
-    "username": "internship",
-    "password": "1000",
-    "database": "hairb2b_database",
+    "username": "root",
+    "password": null,
+    "database": "database_test",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
-    "username": "internship",
-    "password": "1000",
-    "database": "hairb2b_database",
+    "username": "root",
+    "password": null,
+    "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

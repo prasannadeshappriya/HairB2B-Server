@@ -31,6 +31,8 @@ module.exports = {
                         return res.json({
                             error: "Login Success",
                             status: "success",
+                            firstname: user.firstname,
+                            lastname: user.lastname,
                             token: token,
                             email: email
                         });
