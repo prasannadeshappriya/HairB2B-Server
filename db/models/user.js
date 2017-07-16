@@ -32,6 +32,10 @@ module.exports = function(sequelize, DataTypes) {
         profilebannerpic: {
             type: DataTypes.STRING,
             required: true
+        },
+        verify: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     }, {
         classMethods: {

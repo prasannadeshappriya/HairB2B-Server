@@ -28,11 +28,14 @@ module.exports = {
                         var token = jwt.sign({email : user.email}, config.secret,{
                             expiresIn: 60*60*24   //Token expire in 24 Hours
                         });
+                        var varify_status=0;
+                        if(user.verify){varify_status = 1;}
                         return res.json({
                             error: "Login Success",
                             status: "success",
                             firstname: user.firstname,
                             lastname: user.lastname,
+                            verified: varify_status,
                             token: token,
                             email: email
                         });
