@@ -24,5 +24,12 @@ router.post(
         register.getVerifyStatus(req,res);
     }
 );
+router.post(
+    "/resendVerifyLink",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        register.resendVerifyLink(req,res);
+    }
+);
 
 module.exports = router;

@@ -93,6 +93,26 @@ module.exports = {
         });
     },
 
+    resendVerifyLink: function (req,res) {
+        var token = req.body.token;
+        var accValidateLink = "http://localhost:3000/auth/verify?token=" + token;
+        var mailOptions = createEmailBody(
+            req.user.email,
+            req.user.firstname,
+            req.user.lastname,
+            accValidateLink
+        );
+        console.log(mailOptions);
+        sendVerifyEmail(mailOptions,function (callback) {
+            if(callback){
+                console.log('Registration success');
+            }else{
+                console.log('Registration success, There is an error on sending verification link');
+            }
+        });
+        return res.status(200).send('Successful');
+    },
+
     getVerifyStatus: function (req,res) {
         return res.json({verify: req.user.verify});
     },
