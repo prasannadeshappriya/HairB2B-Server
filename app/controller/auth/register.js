@@ -67,7 +67,7 @@ module.exports = {
                     expiresIn: 60*60*24   //Token expire in 24 Hours
                 });
                 var accValidateLink = "http://localhost:3000/auth/verify?token=" + token;
-                var mailOptions = createEmailBody('prasannadeshappriya@gmail.com',first_name, last_name,accValidateLink);
+                var mailOptions = createEmailBody(email,first_name, last_name,accValidateLink);
                 sendVerifyEmail(mailOptions,function (callback) {
                     if(callback){
                         console.log('Registration success');
