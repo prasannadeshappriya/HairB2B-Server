@@ -17,10 +17,6 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             required: true
         },
-        role_id: {
-            type: DataTypes.INTEGER,
-            required: true
-        },
         location_id: {
             type: DataTypes.INTEGER,
             required: true
@@ -34,6 +30,7 @@ module.exports = function(sequelize, DataTypes) {
             required: true
         },
         verify: {
+            required: true,
             type: DataTypes.BOOLEAN,
             defaultValue: false
         }

@@ -1,9 +1,9 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var location = sequelize.define('location', {
-      location_name: {
-          type: DataTypes.STRING,
-          required: true
+  var skill_type = sequelize.define('skill_type', {
+      skill_name: {
+        type:DataTypes.STRING,
+        required:true
       }
   }, {
     classMethods: {
@@ -12,5 +12,5 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
-  return location;
+  return skill_type;
 };

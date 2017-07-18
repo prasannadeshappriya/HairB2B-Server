@@ -1,8 +1,8 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var location = sequelize.define('location', {
-      location_name: {
-          type: DataTypes.STRING,
+  var job_type = sequelize.define('job_type', {
+      job_name: {
+          type:DataTypes.STRING,
           required: true
       }
   }, {
@@ -12,5 +12,5 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
-  return location;
+  return job_type;
 };

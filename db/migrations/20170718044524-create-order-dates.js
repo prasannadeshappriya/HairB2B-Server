@@ -1,16 +1,27 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('roles', {
+    return queryInterface.createTable('order_dates', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      role_name: {
+      order_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        type: Sequelize.STRING
+        references: {
+            type: 'FOREIGN KEY',
+            model: "orders",
+            key: "id"
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+      },
+      order_date: {
+        allowNull: false,
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
@@ -23,6 +34,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('roles');
+    return queryInterface.dropTable('order_dates');
   }
 };

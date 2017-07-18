@@ -24,17 +24,6 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false
             },
-            role_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                references: {
-                    type: 'FOREIGN KEY',
-                    model: "roles",
-                    key: "id"
-                },
-                onDelete: 'cascade',
-                onUpdate: 'cascade'
-            },
             location_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
@@ -53,6 +42,7 @@ module.exports = {
                 type: Sequelize.STRING
             },
             verify: {
+                allowNull: false,
                 type: Sequelize.BOOLEAN,
                 defaultValue: false
             },

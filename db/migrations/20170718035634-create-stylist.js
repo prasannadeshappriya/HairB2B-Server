@@ -1,16 +1,32 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('roles', {
+    return queryInterface.createTable('stylists', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      role_name: {
+      user_id: {
         allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+            type: 'FOREIGN KEY',
+            model: "users",
+            key: "id"
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+      },
+      description: {
         type: Sequelize.STRING
+      },
+      rates: {
+        type: Sequelize.DOUBLE
+      },
+      order_completion: {
+        type: Sequelize.DOUBLE
       },
       createdAt: {
         allowNull: false,
@@ -23,6 +39,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('roles');
+    return queryInterface.dropTable('stylists');
   }
 };
