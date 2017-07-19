@@ -6,6 +6,7 @@ var models = require('../../db/models');
 module.exports = {
     getProfile : function (req, res) {
         var user_id = req.user.id;
+        console.log(user_id);
         models.user_role.findAll({
             where: {
                 user_id: user_id
@@ -14,10 +15,11 @@ module.exports = {
             console.log(user_role);
             //No match for given email address
             if(user_role===null || user_role.length===0){
+                console.log('i am now here');
                 return res.status(404).json({error : "Profile Not found"});
             }
             console.log(user_role.length);
-            return res.json({error : "found", status : "fail"});
+            return res.status(200).json({error : "found", status : "fail"});
             //Check the password with the hashed password
             // if(hashPass.verify(password,user.password)) {
             //     var token = jwt.sign({email : user.email}, config.secret,{
