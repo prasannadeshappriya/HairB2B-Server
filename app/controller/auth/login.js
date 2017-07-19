@@ -33,6 +33,7 @@ module.exports = {
                         return res.json({
                             error: "Login Success",
                             status: "success",
+                            userid: user.id,
                             firstname: user.firstname,
                             lastname: user.lastname,
                             verified: varify_status,

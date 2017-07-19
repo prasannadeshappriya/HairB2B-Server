@@ -79,6 +79,7 @@ module.exports = {
                     error: "Registration success",
                     status: "success",
                     firstname: user.firstname,
+                    userid: user.id,
                     lastname: user.lastname,
                     verified:0,
                     token: token,
