@@ -5,12 +5,6 @@ module.exports = {
     return queryInterface.bulkInsert('roles',[
         {
             role_name: 'stylist'
-        },
-        {
-            role_name: 'saloon'
-        },
-        {
-            role_name: 'assistant'
         }
     ])
     /*
