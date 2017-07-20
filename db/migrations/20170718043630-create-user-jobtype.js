@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('skills', {
+    return queryInterface.createTable('user_jobtypes', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -30,20 +30,9 @@ module.exports = {
         onDelete: 'cascade',
         onUpdate: 'cascade'
       },
-      skill_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-            type: 'FOREIGN KEY',
-            model: "skill_types",
-            key: "id"
-        },
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
-      },
       price: {
         allowNull: false,
-        type: Sequelize.FLOAT
+        type: Sequelize.DOUBLE
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +45,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('skills');
+    return queryInterface.dropTable('user_jobtypes');
   }
 };

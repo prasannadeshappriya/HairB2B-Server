@@ -16,4 +16,12 @@ router.get(
     }
 );
 
+router.post(
+    "/createProfile",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        profile.createProfile(req,res);
+    }
+);
+
 module.exports = router;

@@ -66,7 +66,7 @@ module.exports = {
         allowNull: false,
         references: {
             type: 'FOREIGN KEY',
-            model: "skills",
+            model: "user_jobtypes",
             key: "job_id"
         },
         onDelete: 'cascade',

@@ -1,20 +1,12 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var skill = sequelize.define('skill', {
+  var user_skill = sequelize.define('user_skill', {
     user_id: {
-      type:DataTypes.INTEGER,
-      required:true
-    },
-    job_id: {
       type:DataTypes.INTEGER,
       required:true
     },
     skill_id: {
       type:DataTypes.INTEGER,
-      required:true
-    },
-    price: {
-      type:DataTypes.DOUBLE,
       required:true
     }
   }, {
@@ -24,5 +16,5 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
-  return skill;
+  return user_skill;
 };
