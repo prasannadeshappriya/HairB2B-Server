@@ -77,8 +77,6 @@ module.exports = {
                 }
             }
         );
-
-
     },
 
     getProfileStatus : function (req, res) {
@@ -114,12 +112,44 @@ module.exports = {
             models.stylist.findOne(
                 {where: {user_id: user_id}}
             ).then(function (stylist) {
-                return res.status(200).json(
-                    {description: stylist.dataValues.description}
-                );
+                var user_skills = [];
+                var user_jobtypes = [];
+                var user_jobtype_price = [];
+                models.user_skill.findAll({
+                    where: {
+                        user_id: stylist.dataValues.id
+                    }
+                }).then(function(user_skill){
+                    for (var i=0; i<user_skill.length; i++){user_skills.push(user_skill[i].dataValues.skill_id)}
+                }).catch(function(err){
+                    console.log('Error occurred: ', err);
+                    return res.status(504).json({error : "Server error occurred"});
+                });
+                models.user_jobtype.findAll({
+                    where: {
+                        user_id: stylist.dataValues.id
+                    }
+                }).then(function(user_jobtype){
+                    for (var i=0; i<user_jobtype.length; i++){
+                        user_jobtypes.push(user_jobtype[i].dataValues.job_id);
+                        user_jobtype_price.push(user_jobtype[i].dataValues.price);
+                    }
+                }).catch(function(err){
+                    console.log('Error occurred: ', err);
+                    return res.status(504).json({error : "Server error occurred"});
+                });
+                setTimeout(function () {
+                    return res.status(200).json(
+                        {price: user_jobtype_price,
+                            skills: user_skills,
+                            job_types: user_jobtypes,
+                            description: stylist.dataValues.description}
+                    );
+                },250);
             }).catch(function(err){
                 console.log('Error occurred: ', err);
-                return res.status(504).json({error : "Server error occurred"});
+                var a = {a:"asdasdasd"};
+                return res.status(504).json({error : "Server error occurred"},a);
             });
         }).catch(function(err){
             console.log('Error occurred: ', err);
@@ -127,3 +157,4 @@ module.exports = {
         });
     }
 };
+
