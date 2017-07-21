@@ -34,7 +34,7 @@ module.exports = {
         var description = req.body.description;
         var skills = req.body.skills;
         var job_type = req.body.job_types;
-        var pament_email = req.body.payment_email;
+        //var pament_email = req.body.payment_email;
         var price_job_types = req.body.price_job_types;
 
         addProfileData(
@@ -42,37 +42,36 @@ module.exports = {
             description,
             function (callback, stylist_id) {
                 if(callback){
-                    var i=-1;
-                    var j=-1;
-                    for(i=0; i<skills.length; i++) {
-                        models.user_skill.bulkCreate([
-                            {user_id: stylist_id, skill_id: skills[i]}
-                        ]).then(function (done) {
+                    var user_skill_obj = [];
+                    var job_type_obj = [];
+                    for(var i=0; i<skills.length; i++) {
+                        user_skill_obj.push({user_id: stylist_id, skill_id: skills[i]});
+                    }
+                    for(var j=0; j<job_type.length; j++) {
+                        job_type_obj.push({user_id: stylist_id, job_id: job_type[j], price: price_job_types[j]});
+                    }
+                    setTimeout(function() {
+                        models.user_skill.bulkCreate(user_skill_obj).then(function (done) {
                             console.log('Skill insert success for user: ' + user_id + ' [Items: ' + i + ']');
                         }).catch(function (err) {
                             console.log('Error occurred while inserting skills data [user_skill]: ', err);
                         });
-                    }
-                    for(j=0; j<job_type.length; j++) {
-                        models.user_jobtype.bulkCreate([
-                            {user_id: stylist_id, job_id: skills[j], price: price_job_types[j]}
-                        ]).then(function (done) {
+                        models.user_jobtype.bulkCreate(job_type_obj).then(function (done) {
                             console.log('Jobtype insert success for user: ' + user_id + ' [Items: ' + j + ']');
                         }).catch(function (err) {
-                            console.log('Error occurred while inserting skills data [user_skill]: ', err);
+                            console.log('Error occurred while inserting Jobtype data [Jobtype]: ', err);
                         });
-                    }
+                    },1000);
                     setTimeout(function() {
                         models.user_role.bulkCreate([
                             {user_id: user_id, role_id: 1}
                         ]).then(function (done) {
-                            console.log('Skill insert success for user: ' + user_id + ' [Items: ' + i + ']');
                             return res.status(200).send("Profile Created");
                         }).catch(function (err) {
-                            console.log('Error occurred while inserting skills data [user_skill]: ', err);
+                            console.log('Error occurred: ', err);
                             return res.status(504).send("Server Error");
                         });
-                    }, 1000);
+                    }, 1200);
                 }else{
                     return res.status(504).send("Server Error");
                 }
@@ -80,6 +79,24 @@ module.exports = {
         );
 
 
+    },
+
+    getProfileStatus : function (req, res) {
+        var user_id = req.user.id;
+        models.user_role.findAll({
+            where: {
+                user_id: user_id
+            }
+        }).then(function(user_role){
+            //No match for given email address
+            if(user_role===null || user_role.length===0){
+                return res.status(404).json({error : "Profile Not found"});
+            }
+            return res.status(200).json({error : "Profile for user: " + user_id});
+        }).catch(function(err){
+            console.log('Error occurred: ', err);
+            return res.status(504).json({error : "Server error occurred"});
+        });
     },
 
     getProfile : function (req, res) {
@@ -92,32 +109,21 @@ module.exports = {
         }).then(function(user_role){
             //No match for given email address
             if(user_role===null || user_role.length===0){
-                console.log('i am now here');
                 return res.status(404).json({error : "Profile Not found"});
             }
-            return res.status(200).json({error : "found", status : "fail"});
-            //Check the password with the hashed password
-            // if(hashPass.verify(password,user.password)) {
-            //     var token = jwt.sign({email : user.email}, config.secret,{
-            //         expiresIn: 60*60*24   //Token expire in 24 Hours
-            //     });
-            //     var varify_status=0;
-            //     if(user.verify){varify_status = 1;}
-            //     return res.json({
-            //         error: "Login Success",
-            //         status: "success",
-            //         firstname: user.firstname,
-            //         lastname: user.lastname,
-            //         verified: varify_status,
-            //         token: token,
-            //         email: email
-            //     });
-            // }
-            // //Unauthorized access
-            // return res.json({error : "Username or password is invalid", status : "fail"});
+            models.stylist.findOne(
+                {where: {user_id: user_id}}
+            ).then(function (stylist) {
+                return res.status(200).json(
+                    {description: stylist.dataValues.description}
+                );
+            }).catch(function(err){
+                console.log('Error occurred: ', err);
+                return res.status(504).json({error : "Server error occurred"});
+            });
         }).catch(function(err){
-            console.log('Error occured: ', err);
-            return res.json({error : "Server error occurred", status : "fail"});
+            console.log('Error occurred: ', err);
+            return res.status(504).json({error : "Server error occurred"});
         });
     }
 };

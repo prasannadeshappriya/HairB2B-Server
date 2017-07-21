@@ -16,6 +16,15 @@ router.get(
     }
 );
 
+//Check weather user has a profile or not
+router.get(
+    "/getProfileStatus",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        profile.getProfileStatus(req,res);
+    }
+);
+
 router.post(
     "/createProfile",
     passport.authenticate('jwt', {session :false}),
