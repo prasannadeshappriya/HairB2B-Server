@@ -29,6 +29,73 @@ function addProfileData(user_id,description,callback) {
 }
 
 module.exports = {
+    getProfilePublic: function (req, res) {
+        var user_id = req.query.id;
+        var users = [];
+        var stylists = [];
+        var jobtypes = [];
+        var skilltypes = [];
+        models.user.findAll({
+            where: {
+                id: user_id
+            }
+        }).then(function(user){
+            models.stylist.findAll({
+                where: {
+                    user_id: user[0].dataValues.id
+                }
+            }).then(function(stylist){
+                if(stylist && stylist.length!==0) {
+                    users.push(user);
+                    stylists.push(stylist);
+                    models.user_jobtype.findAll({
+                        where: {
+                            user_id: stylist[0].dataValues.id
+                        }
+                    }).then(function(user_jobtypes_arr){
+                        if(user_jobtypes_arr) {
+                            jobtypes.push(user_jobtypes_arr);
+                        }
+                    }).catch(function(err){
+                        console.log('Error occurred: ', err);
+                        return res.status(504).json({error : "Server error occurred"});
+                    });
+                    models.user_skill.findAll({
+                        where: {
+                            user_id: stylist[0].dataValues.id
+                        }
+                    }).then(function(user_skills){
+                        if(user_skills) {
+                            skilltypes.push(user_skills);
+                        }
+                    }).catch(function(err){
+                        console.log('Error occurred: ', err);
+                        return res.status(504).json({error : "Server error occurred"});
+                    });
+                    setTimeout(function (args) {
+                        return res.status(200).json({
+                            user: user,
+                            stylist: stylist,
+                            jobtypes: jobtypes,
+                            skilltypes: skilltypes
+                        });
+                    },250)
+                }else{
+                    return res.status(200).json({
+                        user: [],
+                        stylist: []
+                    });
+                }
+            }).catch(function(err){
+                console.log('Error occurred: ', err);
+                return res.status(504).json({error : "Server error occurred"});
+            });
+        }).catch(function(err){
+            console.log('Error occurred: ', err);
+            return res.status(504).json({error : "Server error occurred"});
+        });
+    },
+
     createProfile : function (req, res) {
         var user_id = req.user.id;
         var description = req.body.description;

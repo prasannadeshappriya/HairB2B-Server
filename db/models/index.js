@@ -38,6 +38,5 @@ db.user_skill = require('../models/user_skill')(sequelize, Sequelize);
 db.user = require('../models/user')(sequelize, Sequelize);
 db.user_role = require('../models/user_role')(sequelize, Sequelize);
 db.user_jobtype = require('../models/user_jobtype')(sequelize, Sequelize);
-db.users = require('../models/user')(sequelize, Sequelize);
 
 module.exports = db;

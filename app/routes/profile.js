@@ -33,4 +33,6 @@ router.post(
     }
 );
 
+router.route('/getProfilePublic').get(profile.getProfilePublic);
+
 module.exports = router;

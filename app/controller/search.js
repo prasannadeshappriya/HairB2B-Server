@@ -18,7 +18,7 @@ module.exports = {
                 then(function(stylists){
                     var users = [];
                     for(var i=0; i<stylists.length; i++){
-                        models.users.findAll({
+                        models.user.findAll({
                             where: {
                                 id: stylists[i].dataValues.user_id
                             }
@@ -66,7 +66,7 @@ module.exports = {
                 setTimeout(function () {
                     var users = [];
                     for(var i=0; i<stylists.length; i++){
-                        models.users.findAll({
+                        models.user.findAll({
                             where: {
                                 id: stylists[i][0].dataValues.user_id
                             }
@@ -126,7 +126,7 @@ module.exports = {
                     console.log(stylists);
                     for(var i=0; i<stylists.length; i++){
                         try {
-                            models.users.findAll({
+                            models.user.findAll({
                                 where: {
                                     id: stylists[i][0].dataValues.user_id
                                 }
@@ -193,7 +193,7 @@ module.exports = {
                     setTimeout(function () {
                         var users = [];
                         for(var i=0; i<stylists.length; i++){
-                            models.users.findAll({
+                            models.user.findAll({
                                 where: {
                                     id: stylists[0][i].dataValues.user_id
                                 }
