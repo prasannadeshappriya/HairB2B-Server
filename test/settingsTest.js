@@ -22,7 +22,7 @@ const models = require('../db/models');
 
 describe('Change password [Incorrect user credentials]', function(){
     it("should return 401 respond", async function () {
-        models.user.findOne = sinon.stub().returns({status: 'fuck'});
+        models.user.findAll = sinon.stub().returns({status: 'fuck'});
         let a = await settingController.print();
         console.log(a);
         console.log('Test function is completed');
