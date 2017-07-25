@@ -7,6 +7,7 @@ var passport = require('../middleware/passport');
 
 //Controllers
 var profile = require('../controller/profile');
+var settings = require('../controller/settings');
 
 router.get(
     "/getProfile",
@@ -30,6 +31,14 @@ router.post(
     passport.authenticate('jwt', {session :false}),
     function (req,res) {
         profile.createProfile(req,res);
+    }
+);
+
+router.post(
+    "/changePassword",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        settings.changePassword(req,res);
     }
 );
 
