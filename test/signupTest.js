@@ -15,30 +15,30 @@ const expect = chai.expect;
 //Import server and other modules
 const app = require('../app');
 const models = require('../db/models');
-const hashPass = require('password-hash');
 
 //Import controller to test functions
-const login = require('../app/controller/auth/login');
+const signup = require('../app/controller/auth/register');
 
 describe('Sign up with', function() {
-    //Stored user configurations [email and hashed password]
-    let stored_email = 'prasannadeshappriya@gmail.com';
-    let stored_password = hashPass.generate('12345678');
 
-    it("correct credentials should return 200 respond", async function () {
-        //Input details
+    it("correct information will create a account and return 201", async function () {
+        //User inputs [All validations done at the front-end]
+        let first_name = 'Prasanna';
+        let last_name = 'Deshappriya';
         let email = 'prasannadeshappriya@gmail.com';
         let password = '12345678';
 
         //Stub database call and return dummy data
-        models.user.findOne = sinon.stub().returns({
-            id: 1, email: stored_email, password: stored_password,
-            verify: 1,   //1 - email is verified via email verification link
-            firstname: 'Prasanna', lastname: 'Deshappriya'
-        });
+        models.user.findOrCreate = sinon.stub().returns([
+            {user : {firstname : first_name,
+                     last_name : last_name,
+                     email : email,
+                     password : password}},
+            true
+        ]);
 
         //Create a fake request data to call change password function
-        let req = {body: {email: email, password: password}};
+        let req = {body: {email: email, password: password, firstname: first_name, lastname: last_name}};
 
         //Create a fake response object to hold the test response
         let status = sinon.stub().returnsThis();
@@ -48,15 +48,15 @@ describe('Sign up with', function() {
         };
 
         //Call the function with parameters
-        await login.login(req, res);
+        await signup.register(req, res);
 
         //Testing results
-        asserts.equal(status.called, true);                     //Set the status correctly
-        asserts.equal((models.user.findOne).calledOnce, true);  //Check weather database query only called once
-        asserts.equal(status.calledWith(200), true);            //Check status is set with 200
-        asserts.equal(json.called, true);                       //Check weather json is called
+        asserts.equal(status.called, true);                             //Set the status correctly
+        asserts.equal((models.user.findOrCreate).calledOnce, true);     //Check weather database query only called once
+        asserts.equal(status.calledWith(201), true);                    //Check status is set with 200
+        asserts.equal(json.called, true);                               //Check weather json is called
         //get the response arguments
-        let jsonResponse = json.args[0][0];                     //Get the response object
+        let jsonResponse = json.args[0][0];                             //Get the response object
         //Check all the parameters at the response
         expect(jsonResponse).to.have.property('status');
         expect(jsonResponse).to.have.property('userid');
@@ -65,5 +65,46 @@ describe('Sign up with', function() {
         expect(jsonResponse).to.have.property('verified');
         expect(jsonResponse).to.have.property('token');
         expect(jsonResponse).to.have.property('email');
+    });
+
+    it("email which is already taken will return 400", async function () {
+        //User inputs [All validations done at the front-end]
+        let first_name = 'Prasanna';
+        let last_name = 'Deshappriya';
+        let email = 'prasannadeshappriya@gmail.com';
+        let password = '12345678';
+
+        //Stub database call and return dummy data
+        models.user.findOrCreate = sinon.stub().returns([
+            {user : {firstname : first_name,
+                last_name : last_name,
+                email : email,
+                password : password}},
+            false
+        ]);
+
+        //Create a fake request data to call change password function
+        let req = {body: {email: email, password: password, firstname: first_name, lastname: last_name}};
+
+        //Create a fake response object to hold the test response
+        let status = sinon.stub().returnsThis();
+        let json = sinon.spy();
+        let res = {
+            status: status, json: json
+        };
+
+        //Call the function with parameters
+        await signup.register(req, res);
+
+        //Testing results
+        asserts.equal(status.called, true);                             //Set the status correctly
+        asserts.equal((models.user.findOrCreate).calledOnce, true);     //Check weather database query only called once
+        asserts.equal(status.calledWith(400), true);                    //Check status is set with 200
+        asserts.equal(json.called, true);                               //Check weather json is called
+        //get the response arguments
+        let jsonResponse = json.args[0][0];                             //Get the response object
+        //Check all the parameters at the response
+        expect(jsonResponse).to.have.property('error');
+        expect(jsonResponse).to.have.property('status');
     });
 });

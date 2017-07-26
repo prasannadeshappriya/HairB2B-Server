@@ -6,6 +6,7 @@ const models = require('../../../db/models');
 const config = require('../../../config/config');
 const jwt = require('jsonwebtoken');
 const transporter = require('../auth/email.service');
+const validator = require("email-validator");
 
 function createEmailBody(email, firstname, lastname, link) {
     let mailOptions = {
@@ -45,6 +46,11 @@ module.exports = {
         let email = req.body.email;
         let password = req.body.password;
 
+        //Validate email address
+        if(!validator.validate(email)){
+            return res.status(400).json({error: "Invalid email address"});
+        }
+
         try {
             let data = await models.user.findOrCreate({
                 where: {
@@ -78,9 +84,7 @@ module.exports = {
                         console.log('Registration success, There is an error on sending verification link');
                     }
                 });
-                return res.json({
-                    error: "Registration success",
-                    status: "success",
+                return res.status(201).json({
                     firstname: user.firstname,
                     userid: user.id,
                     lastname: user.lastname,
@@ -90,10 +94,10 @@ module.exports = {
                 });
 
             }
-            return res.json({error: "User already exist", status: "fail"});
+            return res.status(409).json({error: "User already exist"});
         } catch (err) {
             console.log('Error occured: ', err);
-            return res.json({error: "Server error occurred", status: "fail"});
+            return res.status(504).json({error: "Server error occurred"});
         }
     },
 
@@ -113,11 +117,11 @@ module.exports = {
                 console.log('Registration success, There is an error on sending verification link');
             }
         });
-        return res.status(200).send('Successful');
+        return res.status(200).send('Success');
     },
 
     getVerifyStatus: function (req,res) {
-        return res.json({verify: req.user.verify});
+        return res.status(200).json({verify: req.user.verify});
     },
 
     verify: async function (req,res) {
@@ -135,11 +139,11 @@ module.exports = {
                 //User Verified
                 return res.redirect('http://localhost:63342/HairB2B/#!/');
             } else {
-                return res.send("Link is expired or something wrong, Try again");
+                return res.status(400).send("Link is expired or something wrong, Try again");
             }
         }catch (err){
             console.log('Error occurred while processing the request: ' + err);
-            return res.send("Server Error");
+            return res.status(504).send("Server Error");
         }
     }
 };

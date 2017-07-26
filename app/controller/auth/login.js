@@ -6,11 +6,17 @@ const hashPass = require('password-hash');
 const config = require('../../../config/config');
 const jwt = require('jsonwebtoken');
 const models = require('../../../db/models');
+const validator = require("email-validator");
 
 module.exports = {
     login : async function (req, res) {
         let email = req.body.email;
         let password = req.body.password;
+
+        //Validate email address
+        if(!validator.validate(email)){
+            return res.status(400).json({error: "Invalid email address"});
+        }
 
         if(email!==""){
             if(password!==""){
@@ -23,7 +29,7 @@ module.exports = {
 
                     //No match for given email address
                     if(user===null){
-                        return res.status(401).json({error : "Username or password is invalid", status : "fail"});
+                        return res.status(400).json({error : "Email address is not associated to any account"});
                     }
 
                     //Check the password with the hashed password
@@ -50,12 +56,12 @@ module.exports = {
                     }
 
                     //Unauthorized access
-                    return res.status(401).json({error : "Username or password is invalid", status : "fail"});
+                    return res.status(401).json({error : "Username or password is invalid"});
                 }catch(err){
                     console.log('Error occured: ', err);
-                    return res.status(401).json({error : "Server error occurred", status : "fail"});
+                    return res.status(504).json({error : "Server error occurred"});
                 }
-            }else{return res.status(401).json({status : 'username or password cannot be blank'});}
-        }else{return res.status(401).json({status : 'username or password cannot be blank'});}
+            }else{return res.status(401).json({status : 'Username or password is invalid'});}
+        }else{return res.status(401).json({status : 'Username or password is invalid'});}
     }
 };
