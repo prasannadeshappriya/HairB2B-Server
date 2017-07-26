@@ -11,5 +11,5 @@ module.exports = {
     test : function (req, res) {
         console.log('Test: ' + req.user.email);
         return res.json({status : "test route working :P"});
-    }
+    },
 };

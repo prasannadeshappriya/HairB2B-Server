@@ -1,9 +1,9 @@
-var express = require('express');
-var passport = require('../middleware/passport');
-var router = express.Router();
+const express = require('express');
+const passport = require('../middleware/passport');
+const router = express.Router();
 
 //Controllers
-var dashboard = require('../controller/dashboard');
+const dashboard = require('../controller/dashboard');
 
 //Routes
 

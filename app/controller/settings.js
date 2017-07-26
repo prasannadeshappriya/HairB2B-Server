@@ -39,13 +39,5 @@ module.exports = {
         }else {
             return res.status(401).json({error: "Invalid old password!"});
         }
-    },
-
-    print: async function () {
-        console.log('------------------------------------Start----------------------------------------');
-        let user = await models.user.findAll();
-        // console.log(test);
-        console.log('------------------------------------END------------------------------------------');
-        return user;
-    },
+    }
 };
