@@ -45,7 +45,6 @@ module.exports = {
 
                         //Return response with user details
                         return res.status(200).json({
-                            status: "success",
                             userid: user.id,
                             firstname: user.firstname,
                             lastname: user.lastname,

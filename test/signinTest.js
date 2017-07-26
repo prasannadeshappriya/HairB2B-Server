@@ -58,7 +58,6 @@ describe('Sign in with', function(){
         //get the response arguments
         let jsonResponse = json.args[0][0];                     //Get the response object
         //Check all the parameters at the response
-        expect(jsonResponse).to.have.property('status');
         expect(jsonResponse).to.have.property('userid');
         expect(jsonResponse).to.have.property('firstname');
         expect(jsonResponse).to.have.property('lastname');
@@ -100,7 +99,6 @@ describe('Sign in with', function(){
         //get the response arguments
         let jsonResponse = json.args[0][0];                     //Get the response object
         //Check all the parameters at the response
-        expect(jsonResponse).to.have.property('status');
         expect(jsonResponse).to.have.property('error');
     });
 
@@ -133,7 +131,6 @@ describe('Sign in with', function(){
         //get the response arguments
         let jsonResponse = json.args[0][0];                     //Get the response object
         //Check all the parameters at the response
-        expect(jsonResponse).to.have.property('status');
         expect(jsonResponse).to.have.property('error');
     });
 
@@ -166,7 +163,6 @@ describe('Sign in with', function(){
         //get the response arguments
         let jsonResponse = json.args[0][0];                     //Get the response object
         //Check all the parameters at the response
-        expect(jsonResponse).to.have.property('status');
         expect(jsonResponse).to.have.property('error');
-    })
+    });
 });

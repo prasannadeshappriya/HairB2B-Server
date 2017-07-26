@@ -36,7 +36,6 @@ function sendVerifyEmail(mailOptions, callback) {
             callback(true);
         }
     });
-
 }
 
 module.exports = {
@@ -139,11 +138,11 @@ module.exports = {
                 //User Verified
                 return res.redirect('http://localhost:63342/HairB2B/#!/');
             } else {
-                return res.status(400).send("Link is expired or something wrong, Try again");
+                return res.status(400).json({error:"Link is expired or something wrong, Try again"});
             }
         }catch (err){
             console.log('Error occurred while processing the request: ' + err);
-            return res.status(504).send("Server Error");
+            return res.status(504).json({error:"Server Error"});
         }
     }
 };
