@@ -1,11 +1,4 @@
 {
-//  "development": {
-//    "username": "internship",
-//    "password": "1000",
-//    "database": "hairb2b_database",
-//    "host": "127.0.0.1",
-//    "dialect": "mysql"
-//  },
   "development": {
     "username": "bed833a23b4b56",
     "password": "1dd272e3",
