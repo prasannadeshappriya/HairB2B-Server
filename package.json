@@ -31,5 +31,12 @@
     "sequelize-cli": "^2.7.0",
     "serve-favicon": "~2.4.2",
     "sinon": "^2.3.8"
+  },
+  "engines": {
+    "node": "8.1.2"
+  },
+  "scripts":{
+    "test": "mocha",
+    "start": "node ./bin/www"
   }
 }
