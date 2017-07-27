@@ -140,7 +140,7 @@ describe('Sign up with', function() {
         expect(jsonResponse).to.have.property('error');
     });
 
-    it("valid email and click on verification link will return 400 respond", async function () {
+    it("valid email and click on verification link will redirect to the home page", async function () {
         //Input details
         let token = 'sample_token';
 
@@ -152,26 +152,84 @@ describe('Sign up with', function() {
         let req = {query: {token:token}};
 
         //Create a fake response object to hold the test response
-        let status = sinon.stub().returnsThis();
-        let json = sinon.spy();
         let redirect = sinon.spy();
         let res = {
-            status: status, json: json, redirect: redirect
+            redirect: redirect
         };
 
         //Call the function with parameters
         await signup.verify(req,res);
 
         //Testing results
-        // asserts.equal(status.called, true);                     //Set the status correctly
-        // asserts.equal((models.user.findOne).called, false);  //Check weather database query only called once
-        // asserts.equal(status.calledWith(400), true);            //Check status is set with 401
-        // asserts.equal(json.called, true);                       //Check weather json is called
-        // //get the response arguments
-        // let jsonResponse = json.args[0][0];                     //Get the response object
-        // console.log(jsonResponse);
-        // //Check all the parameters at the response
-        // expect(jsonResponse).to.have.property('error');
+        //Click on verification link will navigate to the homepage
+        asserts.equal(redirect.calledWith('http://localhost:63342/HairB2B/#!/'), true);
+        asserts.equal((models.user.update).calledOnce, true);     //Check weather database query only called once
+    });
+
+    it("valid email and click on expired verification link will return 400 respond", async function () {
+        //Input details
+        let token = 'sample_token';
+
+        //Stub database call and return dummy data
+        models.user.update = sinon.stub().returns(false);
+        jwt.decode = sinon.stub().returns({email:'prasannadeshappriya@gmail.com'});
+
+        //Create a fake request data to call change password function
+        let req = {query: {token:token}};
+
+        //Create a fake response object to hold the test response
+        let status = sinon.stub().returnsThis();
+        let json = sinon.spy();
+        let res = {
+            status: status, json: json
+        };
+
+        //Call the function with parameters
+        await signup.verify(req,res);
+
+        //Testing results
+        asserts.equal(status.called, true);                             //Set the status correctly
+        asserts.equal((models.user.update).calledOnce, true);           //Check weather database query only called once
+        asserts.equal(status.calledWith(400), true);                    //Check status is set with 400
+        asserts.equal(json.called, true);                               //Check weather json is called
+        //get the response arguments
+        let jsonResponse = json.args[0][0];                             //Get the response object
+        //Check all the parameters at the response
+        expect(jsonResponse).to.have.property('error');
+    });
+
+    it("invalid password will return 400", async function () {
+        //User inputs [All validations done at the front-end]
+        let first_name = 'Prasanna';
+        let last_name = 'Deshappriya';
+        let email = 'prasannadeshappriya@gmail.com';
+        let password = '12345 678'; //Invalid password
+
+        //Stub database call and return dummy data
+        models.user.findOrCreate = sinon.stub().returns(null);
+
+        //Create a fake request data to call change password function
+        let req = {body: {email: email, password: password, firstname: first_name, lastname: last_name}};
+
+        //Create a fake response object to hold the test response
+        let status = sinon.stub().returnsThis();
+        let json = sinon.spy();
+        let res = {
+            status: status, json: json
+        };
+
+        //Call the function with parameters
+        await signup.register(req, res);
+
+        //Testing results
+        asserts.equal(status.called, true);                             //Set the status correctly
+        asserts.equal((models.user.findOrCreate).called, false);        //Check weather database query not being called
+        asserts.equal(status.calledWith(400), true);                    //Check status is set with 400
+        asserts.equal(json.called, true);                               //Check weather json is called
+        //get the response arguments
+        let jsonResponse = json.args[0][0];                             //Get the response object
+        //Check all the parameters at the response
+        expect(jsonResponse).to.have.property('error');
     });
 
 });

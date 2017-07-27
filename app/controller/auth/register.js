@@ -7,6 +7,7 @@ const config = require('../../../config/config');
 const jwt = require('jsonwebtoken');
 const transporter = require('../auth/email.service');
 const validator = require("email-validator");
+const passwordValidator = require('password-validator');
 
 function createEmailBody(email, firstname, lastname, link) {
     let mailOptions = {
@@ -49,6 +50,16 @@ module.exports = {
         if(!validator.validate(email)){
             return res.status(400).json({error: "Invalid email address"});
         }
+        //Validate password
+        let schema = new passwordValidator();
+        // Add properties to it
+        schema
+            .is().min(8)                                    // Minimum length 8
+            .is().max(100)                                  // Maximum length 100
+            .has().not().spaces()                           // Should not have spaces
+        if(!schema.validate(password)){
+            return res.status(400).json({error: "Invalid password"});
+        }
 
         try {
             let data = await models.user.findOrCreate({
@@ -59,7 +70,7 @@ module.exports = {
                     firstname: first_name,
                     lastname: last_name,
                     email: email,
-                    password: password,
+                    password: passhash.generate(password),
                     role_id: 2,
                     location_id: 1,
                     verify: 0,
