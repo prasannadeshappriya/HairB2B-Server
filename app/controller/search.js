@@ -166,16 +166,10 @@ module.exports = {
                     }
                 });
 
-                console.log('----------------------1-------------------');
-                console.log(user_skill);
-                console.log('-------------------------------------------');
                 let stylists = [];
                 let user_jobtypes_arr = [];
                 for (let j = 0; j < user_skill.length; j++) {
                     try {
-                        console.log('----------------------2-------------------');
-                        console.log(user_skill[j].dataValues.user_id);
-                        console.log('-------------------------------------------');
                         let user_jobtype = await models.user_jobtype.findAll({
                             where: {
                                 user_id: user_skill[j].dataValues.user_id,
@@ -185,22 +179,23 @@ module.exports = {
                         if (user_jobtype) {
                             user_jobtypes_arr.push(user_jobtype);
                         }
+
                     } catch (err) {
                         console.log('Error occurred: ', err);
                         return res.status(504).json({error: "Server error occurred"});
                     }
                 }
-
-                console.log(user_jobtypes_arr);
                 for (let i = 0; i < user_jobtypes_arr.length; i++) {
                     try {
-                        let arrStylists = await models.stylist.findAll({
-                            where: {
-                                id: user_jobtypes_arr[0][i].dataValues.user_id
+                        if (!(typeof user_jobtypes_arr[0][i]==='undefined')){
+                            let arrStylists = await models.stylist.findAll({
+                                where: {
+                                    id: user_jobtypes_arr[0][i].dataValues.user_id
+                                }
+                            });
+                            if (arrStylists) {
+                                stylists.push(arrStylists);
                             }
-                        });
-                        if (arrStylists) {
-                            stylists.push(arrStylists);
                         }
                     } catch (err) {
                         console.log(err);
@@ -220,9 +215,9 @@ module.exports = {
                             users.push(arrUsers);
                         }
                     } catch (err) {
+                        console.log('Error occurred: ', err);
+                        return res.status(504).json({error: "Server error occurred"});
                     }
-                    console.log('Error occurred: ', err);
-                    return res.status(504).json({error: "Server error occurred"});
                 }
 
                 return res.status(200).json({
