@@ -13,8 +13,6 @@ module.exports = {
         if (skill_id === 'all' && type_id === 'all') {
             try {
                 let user_job_types = await models.user_jobtype.findAll();
-                user_jobtypes = user_job_types;
-
                 let stylists = await models.stylist.findAll();
 
                 let users = [];
@@ -46,6 +44,7 @@ module.exports = {
         } else if (skill_id === 'all' && typeof type_id !== 'undefined') {
             try {
                 let user_jobtypes = await models.user_jobtype.findAll({
+                    attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('user_id')),'user_id'], 'job_id', 'price'],
                     where: {
                         job_id: type_id
                     }
@@ -97,6 +96,7 @@ module.exports = {
         } else if (typeof skill_id !== 'undefined' && type_id === 'all') {
             try {
                 let user_skill = await models.user_skill.findAll({
+                    attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('user_id')),'user_id'], 'skill_id'],
                     where: {skill_id: skill_id}
                 });
                 let stylists = [];
@@ -161,11 +161,11 @@ module.exports = {
         } else if (typeof skill_id !== 'undefined' && typeof type_id !== 'undefined') {
             try {
                 let user_skill = await models.user_skill.findAll({
+                    attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('user_id')),'user_id'], 'skill_id'],
                     where: {
                         skill_id: skill_id
                     }
                 });
-
                 let stylists = [];
                 let user_jobtypes_arr = [];
                 for (let j = 0; j < user_skill.length; j++) {
@@ -187,12 +187,16 @@ module.exports = {
                 }
                 for (let i = 0; i < user_jobtypes_arr.length; i++) {
                     try {
-                        if (!(typeof user_jobtypes_arr[0][i]==='undefined')){
+                        let user_id;
+                        if(!(typeof user_jobtypes_arr[0][i]==='undefined')){user_id=user_jobtypes_arr[0][i].dataValues.user_id;}
+                        else if(!(typeof user_jobtypes_arr[i][0]==='undefined')){user_id=user_jobtypes_arr[i][0].dataValues.user_id;}
+                        if (!(typeof user_id==='undefined')){
                             let arrStylists = await models.stylist.findAll({
                                 where: {
-                                    id: user_jobtypes_arr[0][i].dataValues.user_id
+                                    id: user_id
                                 }
                             });
+
                             if (arrStylists) {
                                 stylists.push(arrStylists);
                             }
@@ -202,13 +206,18 @@ module.exports = {
                         console.log('Error on getting query data');
                     }
                 }
-
                 let users = [];
                 for (let i = 0; i < stylists.length; i++) {
+                    let user_id;
+                    if(!(typeof stylists[0][i]==='undefined')){
+                        user_id = stylists[0][i].dataValues.user_id;
+                    }else if(!(typeof stylists[i][0]==='undefined')){
+                        user_id = stylists[i][0].dataValues.user_id;
+                    }
                     try {
                         let arrUsers = await models.user.findAll({
                             where: {
-                                id: stylists[0][i].dataValues.user_id
+                                id: user_id
                             }
                         });
                         if (arrUsers) {
