@@ -1,7 +1,7 @@
 /**
  * Created by prasanna on 7/23/17.
  */
-var models = require('../../db/models');
+const models = require('../../db/models');
 
 module.exports = {
     getSimpleSearchResults: async function (req, res) {
@@ -241,5 +241,72 @@ module.exports = {
         }else{
             return res.status(504).json({error : "Parameters are required"});
         }
+    },
+
+    getDynamicSearchResults : async function (req,res) {
+        let jobtype = req.query.jobtype;
+        let skilltype = req.query.skilltype;
+
+        jobtype = [3,4];
+        let a = await dynamicSearchTypes(jobtype);
+        console.log(a);
+        return res.status(200).json({status: 'success'})
     }
 };
+
+async function dynamicSearchTypes(jobtype) {
+    try {
+        let user_skill = await models.user_skill.findAll({
+            attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('user_id')), 'user_id'], 'skill_id'],
+            where: {
+                skill_id: {$in: jobtype}
+            }
+        });
+        let i;
+        let user_id = [];
+        let tmp = [];
+        for(i=0; i<user_skill.length; i++){
+            let a = user_skill[i].dataValues.user_id;
+            let b = [];
+            for(j=0; j<user_skill.length; j++){
+                // if(jobtype.indexOf(user_skill[i].dataValues.skill)
+                if(a===user_skill[j].dataValues.user_id &&
+                    jobtype.indexOf(user_skill[i].dataValues.skill_id)!==-1){
+                    b.push(user_skill[j].dataValues.skill_id);
+                }
+            }
+
+            if (jobtype.length === b.length
+                && jobtype.every(function(u, i) {
+                    return is(u, b[i]);
+                })
+            ) {
+                if(user_id.length>0){
+                    let con = true;
+                    for (k=0; k<user_id.length; k++){
+                        if(user_id.indexOf(a)!==-1){
+                            con = false;
+                            break;
+                        }
+                    }
+                    if(con){
+                        user_id.push(a);
+                        tmp.push(b);
+                    }
+                }else{
+                    user_id.push(a);
+                    tmp.push(b);
+                }
+            }
+        }
+        return user_id;
+    }catch (err){
+        console.log('Error occoured: ' + err);
+        return [];
+    }
+}
+
+function is(a, b) {
+    return a === b && (a !== 0 || 1 / a === 1 / b) // false for +0 vs -0
+        || a !== a && b !== b; // true for NaN vs NaN
+}

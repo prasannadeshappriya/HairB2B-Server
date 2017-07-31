@@ -9,5 +9,6 @@ const search = require('../controller/search');
 
 //User Auth routes
 router.route('/simplesearch').get(search.getSimpleSearchResults);
+router.route('/dynamicsearch').get(search.getDynamicSearchResults);
 
 module.exports = router;
