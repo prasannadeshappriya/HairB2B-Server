@@ -247,19 +247,44 @@ module.exports = {
         let jobtype = req.query.jobtype;
         let skilltype = req.query.skilltype;
 
-        jobtype = [3,4];
-        let a = await dynamicSearchTypes(jobtype);
-        console.log(a);
+        jobtype = jobtype.split(',');
+        let jobtypeArr = [];
+        let i=0;
+        for(i=0; i<(jobtype.length); i++){
+            jobtypeArr.push(parseInt(jobtype[i])+1);
+        }
+
+        skilltype = skilltype.split(',');
+        let skilltypeArr = [];
+        for(i=0; i<(skilltype.length); i++){
+            skilltypeArr.push(parseInt(skilltype[i])+1);
+        }
+        console.log('----------------fijnasioinie9824832482344-------------');
+        console.log(skilltype);
+        console.log('-----------------------------');
+
+        let user_results_skills = await dynamicSearchSkills(skilltype);
+        let user_results_types = await dynamicSearchTypes(jobtypeArr);
+        console.log('-----------------------------');
+        console.log(user_results_skills);
+        console.log('-----------------------------');
+        console.log('-----------------------------');
+        console.log(user_results_types);
+        console.log('-----------------------------');
         return res.status(200).json({status: 'success'})
     }
 };
 
-async function dynamicSearchTypes(jobtype) {
+async function dynamicSearchSkills(skillArr) {
     try {
+        console.log('------fker------');
+        console.log(skillArr);
+        skillArr = [0,1];
+        console.log('------------');
         let user_skill = await models.user_skill.findAll({
             attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('user_id')), 'user_id'], 'skill_id'],
             where: {
-                skill_id: {$in: jobtype}
+                skill_id: {$in: skillArr}
             }
         });
         let i;
@@ -270,13 +295,13 @@ async function dynamicSearchTypes(jobtype) {
             let user_skill_i = [];
             for(j=0; j<user_skill.length; j++){
                 if(user_id_i===user_skill[j].dataValues.user_id &&
-                    jobtype.indexOf(user_skill[i].dataValues.skill_id)!==-1){
+                    skillArr.indexOf(user_skill[i].dataValues.skill_id)!==-1){
                     user_skill_i.push(user_skill[j].dataValues.skill_id);
                 }
             }
 
-            if (jobtype.length === user_skill_i.length
-                && jobtype.every(function(u, i) {
+            if (skillArr.length === user_skill_i.length
+                && skillArr.every(function(u, i) {
                     return is(u, user_skill_i[i]);
                 })
             ) {
@@ -295,6 +320,60 @@ async function dynamicSearchTypes(jobtype) {
                 }else{
                     user_id.push(user_id_i);
                     tmp.push(user_skill_i);
+                }
+            }
+        }
+        return user_id;
+    }catch (err){
+        console.log('Error occoured: ' + err);
+        return [];
+    }
+}
+
+async function dynamicSearchTypes(jobtype) {
+    console.log('------fkeasdasdasdadr------');
+    console.log(jobtype);
+    console.log('------------');
+    try {
+        let user_types = await models.user_jobtype.findAll({
+            attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('user_id')), 'user_id'], 'job_id', 'price'],
+            where: {
+                job_id: {$in: jobtype}
+            }
+        });
+        let i;
+        let user_id = [];
+        let tmp = [];
+        for(i=0; i<user_types.length; i++){
+            let user_id_i = user_types[i].dataValues.user_id;
+            let user_type_i = [];
+            for(j=0; j<user_types.length; j++){
+                if(user_id_i===user_types[j].dataValues.user_id &&
+                    jobtype.indexOf(user_types[i].dataValues.job_id)!==-1){
+                    user_type_i.push(user_types[j].dataValues.job_id);
+                }
+            }
+
+            if (jobtype.length === user_type_i.length
+                && jobtype.every(function(u, i) {
+                    return is(u, user_type_i[i]);
+                })
+            ) {
+                if(user_id.length>0){
+                    let con = true;
+                    for (k=0; k<user_id.length; k++){
+                        if(user_id.indexOf(user_id_i)!==-1){
+                            con = false;
+                            break;
+                        }
+                    }
+                    if(con){
+                        user_id.push(user_id_i);
+                        tmp.push(user_type_i);
+                    }
+                }else{
+                    user_id.push(user_id_i);
+                    tmp.push(user_type_i);
                 }
             }
         }
