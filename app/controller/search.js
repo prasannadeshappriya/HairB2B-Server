@@ -266,36 +266,35 @@ async function dynamicSearchTypes(jobtype) {
         let user_id = [];
         let tmp = [];
         for(i=0; i<user_skill.length; i++){
-            let a = user_skill[i].dataValues.user_id;
-            let b = [];
+            let user_id_i = user_skill[i].dataValues.user_id;
+            let user_skill_i = [];
             for(j=0; j<user_skill.length; j++){
-                // if(jobtype.indexOf(user_skill[i].dataValues.skill)
-                if(a===user_skill[j].dataValues.user_id &&
+                if(user_id_i===user_skill[j].dataValues.user_id &&
                     jobtype.indexOf(user_skill[i].dataValues.skill_id)!==-1){
-                    b.push(user_skill[j].dataValues.skill_id);
+                    user_skill_i.push(user_skill[j].dataValues.skill_id);
                 }
             }
 
-            if (jobtype.length === b.length
+            if (jobtype.length === user_skill_i.length
                 && jobtype.every(function(u, i) {
-                    return is(u, b[i]);
+                    return is(u, user_skill_i[i]);
                 })
             ) {
                 if(user_id.length>0){
                     let con = true;
                     for (k=0; k<user_id.length; k++){
-                        if(user_id.indexOf(a)!==-1){
+                        if(user_id.indexOf(user_id_i)!==-1){
                             con = false;
                             break;
                         }
                     }
                     if(con){
-                        user_id.push(a);
-                        tmp.push(b);
+                        user_id.push(user_id_i);
+                        tmp.push(user_skill_i);
                     }
                 }else{
-                    user_id.push(a);
-                    tmp.push(b);
+                    user_id.push(user_id_i);
+                    tmp.push(user_skill_i);
                 }
             }
         }
