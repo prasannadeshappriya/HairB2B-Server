@@ -288,6 +288,7 @@ module.exports = {
         });
 
         let users = [];
+        let jobtypes = [];
         for (let j = 0; j < stylists.length; j++) {
             try {
                 let user = await models.user.findAll({
@@ -298,14 +299,26 @@ module.exports = {
                 if (user) {
                     users.push(user);
                 }
-
+                let jobtype = await models.user_jobtype.findAll({
+                    where: {
+                        user_id: stylists[j].dataValues.id
+                    }
+                });
+                if (jobtype) {
+                    for(let a=0; a<jobtype.length; a++){
+                        let tmp_jobtypes = [];
+                        tmp_jobtypes.push(jobtype[a].dataValues.user_id);
+                        tmp_jobtypes.push(jobtype[a].dataValues.price);
+                        jobtypes.push(tmp_jobtypes);
+                    }
+                }
             } catch (err) {
                 console.log('Error occurred: ', err);
                 return res.status(504).json({error: "Server error occurred"});
             }
         }
-
         return res.status(200).json({
+            jobtypes: jobtypes,
             users: users,
             stylists: stylists
         });
@@ -333,9 +346,9 @@ async function dynamicSearchSkills(skillArr) {
                 }
             }
             if (skillArr.length === user_skill_i.length
-                && skillArr.every(function(u, i) {
-                    return is(u, user_skill_i[i]);
-                })
+                // && skillArr.every(function(u, i) {
+                //     return is(u, user_skill_i[i]);
+                // })
             ) {
                 if(user_id.length>0){
                     let con = true;
@@ -370,6 +383,7 @@ async function dynamicSearchTypes(jobtype) {
                 job_id: {$in: jobtype}
             }
         });
+        // console.log(user_types);
         let i;
         let user_id = [];
         let tmp = [];
@@ -384,18 +398,18 @@ async function dynamicSearchTypes(jobtype) {
             }
 
             if (jobtype.length === user_type_i.length
-                && jobtype.every(function(u, i) {
-                    return is(u, user_type_i[i]);
-                })
+            //     && jobtype.every(function(u, i) {
+            //         return is(u, user_type_i[i]);
+            //     })
             ) {
                 if(user_id.length>0){
                     let con = true;
-                    for (k=0; k<user_id.length; k++){
+                    // for (k=0; k<user_id.length; k++){
                         if(user_id.indexOf(user_id_i)!==-1){
                             con = false;
                             break;
                         }
-                    }
+                    // }
                     if(con){
                         user_id.push(user_id_i);
                         tmp.push(user_type_i);
@@ -413,7 +427,7 @@ async function dynamicSearchTypes(jobtype) {
     }
 }
 
-function is(a, b) {
-    return a === b && (a !== 0 || 1 / a === 1 / b) // false for +0 vs -0
-        || a !== a && b !== b; // true for NaN vs NaN
-}
+// function is(a, b) {
+//     return a === b && (a !== 0 || 1 / a === 1 / b) // false for +0 vs -0
+//         || a !== a && b !== b; // true for NaN vs NaN
+// }
