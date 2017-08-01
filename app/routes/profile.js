@@ -42,6 +42,14 @@ router.post(
     }
 );
 
+router.get(
+    "/getAccountAndSettings",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        settings.getAccountAndSettings(req,res);
+    }
+);
+
 router.route('/getProfilePublic').get(profile.getProfilePublic);
 
 module.exports = router;

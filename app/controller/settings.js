@@ -39,5 +39,36 @@ module.exports = {
         }else {
             return res.status(401).json({error: "Invalid old password!"});
         }
+    },
+
+    getAccountAndSettings: async function(req,res){
+        let user_id = req.user.id;
+        try {
+            let stylists = await models.stylist.findAll({
+                where: {user_id: user_id}
+            });
+            if (stylists) {
+                let stylist_id = stylists[0].dataValues.id;
+                let jobtypes = await models.user_jobtype.findAll({
+                    where: {
+                        user_id: stylist_id
+                    }
+                });
+                let skilltypes = await models.user_skill.findAll({
+                    where: {
+                        user_id: stylist_id
+                    }
+                });
+                return res.status(200).json({
+                    jobtypes: jobtypes,
+                    skilltypes: skilltypes
+                });
+            }else{
+                return res.status(504).json({error : "Bad gateway"});
+            }
+        }catch (err){
+            console.log(err);
+            return res.status(500).json({error : "Server error occurred"});
+        }
     }
 };
