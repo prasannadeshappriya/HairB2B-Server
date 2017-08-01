@@ -246,41 +246,74 @@ module.exports = {
     getDynamicSearchResults : async function (req,res) {
         let jobtype = req.query.jobtype;
         let skilltype = req.query.skilltype;
+        let i = 0;  //Iterator for for-loop
 
-        jobtype = jobtype.split(',');
         let jobtypeArr = [];
-        let i=0;
-        for(i=0; i<(jobtype.length); i++){
-            jobtypeArr.push(parseInt(jobtype[i])+1);
+        if(jobtype==='all'){
+            for(let m=0; m<3; m++){jobtypeArr.push((m+1))}
+        }else {
+            jobtype = jobtype.split(',');
+            for (i = 0; i < (jobtype.length); i++) {
+                jobtypeArr.push(parseInt(jobtype[i]) + 1);
+            }
         }
 
-        skilltype = skilltype.split(',');
         let skilltypeArr = [];
-        for(i=0; i<(skilltype.length); i++){
-            skilltypeArr.push(parseInt(skilltype[i])+1);
+        if(skilltype==='all'){
+            for(let m=0; m<11; m++){jobtypeArr.push((m+1))}
+        }else {
+            skilltype = skilltype.split(',');
+            for (i = 0; i < (skilltype.length); i++) {
+                skilltypeArr.push(parseInt(skilltype[i]) + 1);
+            }
         }
-        console.log('----------------fijnasioinie9824832482344-------------');
-        console.log(skilltype);
-        console.log('-----------------------------');
 
-        let user_results_skills = await dynamicSearchSkills(skilltype);
+        let user_results_skills = await dynamicSearchSkills(skilltypeArr);
         let user_results_types = await dynamicSearchTypes(jobtypeArr);
-        console.log('-----------------------------');
-        console.log(user_results_skills);
-        console.log('-----------------------------');
-        console.log('-----------------------------');
-        console.log(user_results_types);
-        console.log('-----------------------------');
-        return res.status(200).json({status: 'success'})
+
+        let dynamic_result_user = [];
+        for(i=0; i<user_results_types.length; i++) {
+            for (r = 0; r < user_results_skills.length; r++) {
+                if ((dynamic_result_user.indexOf(user_results_types[i]) === -1) &&
+                    user_results_types[i] === user_results_skills[r]) {
+                    dynamic_result_user.push(user_results_types[i]);
+                }
+            }
+        }
+
+        let stylists = await models.stylist.findAll({
+            where: {
+                id: {$in: dynamic_result_user}
+            }
+        });
+
+        let users = [];
+        for (let j = 0; j < stylists.length; j++) {
+            try {
+                let user = await models.user.findAll({
+                    where: {
+                        id: stylists[j].dataValues.user_id
+                    }
+                });
+                if (user) {
+                    users.push(user);
+                }
+
+            } catch (err) {
+                console.log('Error occurred: ', err);
+                return res.status(504).json({error: "Server error occurred"});
+            }
+        }
+
+        return res.status(200).json({
+            users: users,
+            stylists: stylists
+        });
     }
 };
 
 async function dynamicSearchSkills(skillArr) {
     try {
-        console.log('------fker------');
-        console.log(skillArr);
-        skillArr = [0,1];
-        console.log('------------');
         let user_skill = await models.user_skill.findAll({
             attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('user_id')), 'user_id'], 'skill_id'],
             where: {
@@ -299,7 +332,6 @@ async function dynamicSearchSkills(skillArr) {
                     user_skill_i.push(user_skill[j].dataValues.skill_id);
                 }
             }
-
             if (skillArr.length === user_skill_i.length
                 && skillArr.every(function(u, i) {
                     return is(u, user_skill_i[i]);
@@ -331,9 +363,6 @@ async function dynamicSearchSkills(skillArr) {
 }
 
 async function dynamicSearchTypes(jobtype) {
-    console.log('------fkeasdasdasdadr------');
-    console.log(jobtype);
-    console.log('------------');
     try {
         let user_types = await models.user_jobtype.findAll({
             attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('user_id')), 'user_id'], 'job_id', 'price'],
