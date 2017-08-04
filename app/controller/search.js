@@ -2,6 +2,7 @@
  * Created by prasanna on 7/23/17.
  */
 const models = require('../../db/models');
+const intersection = require('array-intersection');
 
 module.exports = {
     getSimpleSearchResults: async function (req, res) {
@@ -383,42 +384,38 @@ async function dynamicSearchTypes(jobtype) {
                 job_id: {$in: jobtype}
             }
         });
-        // console.log(user_types);
         let i;
-        let user_id = [];
-        let tmp = [];
-        for(i=0; i<user_types.length; i++){
-            let user_id_i = user_types[i].dataValues.user_id;
-            let user_type_i = [];
-            for(j=0; j<user_types.length; j++){
-                if(user_id_i===user_types[j].dataValues.user_id &&
-                    jobtype.indexOf(user_types[i].dataValues.job_id)!==-1){
-                    user_type_i.push(user_types[j].dataValues.job_id);
-                }
-            }
-
-            if (jobtype.length === user_type_i.length
-            //     && jobtype.every(function(u, i) {
-            //         return is(u, user_type_i[i]);
-            //     })
-            ) {
-                if(user_id.length>0){
-                    let con = true;
-                    // for (k=0; k<user_id.length; k++){
-                        if(user_id.indexOf(user_id_i)!==-1){
-                            con = false;
-                            break;
-                        }
-                    // }
-                    if(con){
-                        user_id.push(user_id_i);
-                        tmp.push(user_type_i);
+        let user_id;
+        let user_id_0 = [], user_id_1 = [], user_id_2 = [];
+        for(i=0; i<jobtype.length; i++) {
+            if(i===0) {
+                for (let j = 0; j < user_types.length; j++) {
+                    if (user_types[j].dataValues.job_id === jobtype[i]) {
+                        user_id_0.push(user_types[j].dataValues.user_id);
                     }
-                }else{
-                    user_id.push(user_id_i);
-                    tmp.push(user_type_i);
                 }
             }
+            if(i===1) {
+                for (let j = 0; j < user_types.length; j++) {
+                    if (user_types[j].dataValues.job_id === jobtype[i]) {
+                        user_id_1.push(user_types[j].dataValues.user_id);
+                    }
+                }
+            }
+            if(i===2) {
+                for (let j = 0; j < user_types.length; j++) {
+                    if (user_types[j].dataValues.job_id === jobtype[i]) {
+                        user_id_2.push(user_types[j].dataValues.user_id);
+                    }
+                }
+            }
+        }
+        if (jobtype.length===2){
+            user_id = intersection(user_id_0,user_id_1);
+        }else if(jobtype.length===3){
+            user_id = intersection(user_id_0,user_id_1,user_id_2);
+        }else{
+            user_id = user_id_0;
         }
         return user_id;
     }catch (err){
@@ -426,8 +423,3 @@ async function dynamicSearchTypes(jobtype) {
         return [];
     }
 }
-
-// function is(a, b) {
-//     return a === b && (a !== 0 || 1 / a === 1 / b) // false for +0 vs -0
-//         || a !== a && b !== b; // true for NaN vs NaN
-// }
