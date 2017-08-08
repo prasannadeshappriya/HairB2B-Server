@@ -346,11 +346,7 @@ async function dynamicSearchSkills(skillArr) {
                     user_skill_i.push(user_skill[j].dataValues.skill_id);
                 }
             }
-            if (skillArr.length === user_skill_i.length
-                // && skillArr.every(function(u, i) {
-                //     return is(u, user_skill_i[i]);
-                // })
-            ) {
+            if (skillArr.length === user_skill_i.length) {
                 if(user_id.length>0){
                     let con = true;
                     for (k=0; k<user_id.length; k++){

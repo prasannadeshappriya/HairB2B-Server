@@ -205,6 +205,6 @@ module.exports = {
             console.log('Error occurred: ', err);
             return res.status(504).json({error : "Server error occurred"});
         }
-    }
+    },
 };
 

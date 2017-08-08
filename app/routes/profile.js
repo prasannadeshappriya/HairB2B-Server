@@ -50,6 +50,30 @@ router.get(
     }
 );
 
+router.get(
+    "/getProfileForEdit",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        settings.getProfileForEdit(req,res);
+    }
+);
+
+router.post(
+    "/updateProfile",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        settings.updateProfile(req,res);
+    }
+);
+
+router.post(
+    "/updateProfileSkillsTypes",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        settings.updateProfileSkillsTypes(req,res);
+    }
+);
+
 router.route('/getProfilePublic').get(profile.getProfilePublic);
 
 module.exports = router;
