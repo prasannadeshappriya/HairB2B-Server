@@ -1,18 +1,19 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var cors = require('cors');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 //Route files
-var index = require('./app/routes/index');
-var auth = require('./app/routes/auth');
-var profile = require('./app/routes/profile');
-var search = require('./app/routes/search');
+const index = require('./app/routes/index');
+const auth = require('./app/routes/auth');
+const profile = require('./app/routes/profile');
+const search = require('./app/routes/search');
+const order = require('./app/routes/order');
 
-var app = express();
+const app = express();
 app.use(cors());
 
 // view engine setup
@@ -32,10 +33,11 @@ app.use('/', index);
 app.use('/auth', auth);
 app.use('/profile', profile);
 app.use('/search', search);
+app.use('/order', order);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
