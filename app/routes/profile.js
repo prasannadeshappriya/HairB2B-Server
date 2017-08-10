@@ -91,6 +91,7 @@ router.post(
     }
 );
 
+router.route('/getBusyDatesPublic').get(profile.getBusyDatesPublic);
 router.route('/getProfilePublic').get(profile.getProfilePublic);
 
 module.exports = router;

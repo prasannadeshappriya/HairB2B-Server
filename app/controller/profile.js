@@ -236,6 +236,35 @@ module.exports = {
         }
     },
 
+    getBusyDatesPublic : async function (req, res) {
+        let user_id = req.query.id;
+        try {
+            let stylist = await models.stylist.findOne(
+                {where: {user_id: user_id}}
+            );
+            if(stylist){
+                let busy_dates = await models.busy_dates.findAll({
+                    where: {
+                        user_id: stylist.dataValues.id
+                    }
+                });
+                let ret = [];
+                if(busy_dates){
+                    for(let i=0; i<busy_dates.length; i++){
+                        ret.push(busy_dates[i].dataValues.date);
+                    }
+                    return res.status(200).json({busy_dates: ret});
+                }
+                return res.status(200).json({busy_dates: ret});
+            }else{
+                return res.status(400).json({error : "No profile found"});
+            }
+        }catch (err){
+            console.log('Error occurred: ', err);
+            return res.status(504).json({error : "Server error occurred"});
+        }
+    },
+
     updateBusyDates : async function (req, res) {
         let new_busy_dates = req.body.busydates;
         let user_id = req.user.id;
