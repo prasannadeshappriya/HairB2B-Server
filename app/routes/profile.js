@@ -74,6 +74,23 @@ router.post(
     }
 );
 
+//Calendar
+router.get(
+    "/getBusyDates",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        profile.getBusyDates(req,res);
+    }
+);
+
+router.post(
+    "/updateBusyDates",
+    passport.authenticate('jwt', {session :false}),
+    function (req,res) {
+        profile.updateBusyDates(req,res);
+    }
+);
+
 router.route('/getProfilePublic').get(profile.getProfilePublic);
 
 module.exports = router;

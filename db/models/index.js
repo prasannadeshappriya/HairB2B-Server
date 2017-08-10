@@ -38,5 +38,6 @@ db.user_skill = require('../models/user_skill')(sequelize, Sequelize);
 db.user = require('../models/user')(sequelize, Sequelize);
 db.user_role = require('../models/user_role')(sequelize, Sequelize);
 db.user_jobtype = require('../models/user_jobtype')(sequelize, Sequelize);
+db.busy_dates = require('../models/busy_date')(sequelize, Sequelize);
 
 module.exports = db;
